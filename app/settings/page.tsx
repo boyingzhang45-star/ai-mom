@@ -11,7 +11,7 @@ const PERSONALITIES = [
 ]
 
 const AVATARS = [
-  { id: "1", emoji: "🌸", color: "#FDE8E8" },
+  { id: "1", emoji: "🌸", color: "#FFF0ED" },
   { id: "2", emoji: "🌺", color: "#FCE4EC" },
   { id: "3", emoji: "🌼", color: "#FFF8E1" },
   { id: "4", emoji: "💐", color: "#F3E5F5" },
@@ -78,15 +78,15 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="h-screen bg-[#FFF5F5] flex items-center justify-center">
+      <div className="h-screen bg-[#FFF8F5] flex items-center justify-center">
         <span className="text-gray-400 text-sm">加载中...</span>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF5F5] max-w-lg mx-auto">
-      <header className="flex items-center gap-4 px-4 py-3 bg-white/90 backdrop-blur-sm border-b border-[#F0E0E0]">
+    <div className="min-h-screen bg-[#FFF8F5] max-w-lg mx-auto">
+      <header className="flex items-center gap-4 px-4 py-3 bg-white/90 backdrop-blur-sm border-b border-[#F0E4DB]">
         <button onClick={() => router.back()} className="text-gray-500 text-sm">
           取消
         </button>
@@ -94,7 +94,7 @@ export default function SettingsPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="text-[#E8B4B8] text-sm font-medium disabled:opacity-50"
+          className="text-[#E8998B] text-sm font-medium disabled:opacity-50"
         >
           {saving ? "保存中..." : "保存"}
         </button>
@@ -115,7 +115,7 @@ export default function SettingsPage() {
                 onClick={() => setAvatarUrl(a.emoji)}
                 className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-all ${
                   avatarUrl === a.emoji
-                    ? "ring-2 ring-[#E8B4B8] ring-offset-2 scale-110"
+                    ? "ring-2 ring-[#E8998B] ring-offset-2 scale-110"
                     : "hover:scale-105"
                 }`}
                 style={{ backgroundColor: a.color }}
@@ -131,7 +131,7 @@ export default function SettingsPage() {
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-[#F0E0E0] bg-white text-gray-800 text-sm focus:outline-none focus:border-[#E8B4B8]"
+            className="w-full px-4 py-3 rounded-xl border border-[#F0E4DB] bg-white text-gray-800 text-sm focus:outline-none focus:border-[#E8998B]"
           />
         </div>
 
@@ -143,7 +143,7 @@ export default function SettingsPage() {
             max={65}
             value={age}
             onChange={(e) => setAge(Number(e.target.value))}
-            className="w-full accent-[#E8B4B8]"
+            className="w-full accent-[#E8998B]"
           />
         </div>
 
@@ -156,8 +156,8 @@ export default function SettingsPage() {
                 onClick={() => setPersonality(p.value)}
                 className={`w-full text-left px-4 py-3 rounded-xl border transition-colors ${
                   personality === p.value
-                    ? "border-[#E8B4B8] bg-[#FFF5F5]"
-                    : "border-[#F0E0E0] bg-white hover:bg-[#FFF8F8]"
+                    ? "border-[#E8998B] bg-[#FFF8F5]"
+                    : "border-[#F0E4DB] bg-white hover:bg-[#FFF3F0]"
                 }`}
               >
                 <div className="font-medium text-sm text-gray-800">{p.label}</div>
@@ -174,7 +174,7 @@ export default function SettingsPage() {
             onChange={(e) => setFamilyDescription(e.target.value)}
             placeholder="如：妈妈是退休教师，和爸爸住在老家..."
             rows={3}
-            className="w-full px-4 py-3 rounded-xl border border-[#F0E0E0] bg-white text-gray-800 text-sm focus:outline-none focus:border-[#E8B4B8] placeholder-gray-400 resize-none"
+            className="w-full px-4 py-3 rounded-xl border border-[#F0E4DB] bg-white text-gray-800 text-sm focus:outline-none focus:border-[#E8998B] placeholder-gray-400 resize-none"
           />
         </div>
       </div>

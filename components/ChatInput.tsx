@@ -58,11 +58,11 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
   }
 
   return (
-    <div className="flex gap-2 px-4 py-3 bg-white/90 backdrop-blur-sm border-t border-[#F0E0E0]">
+    <div className="flex gap-2 px-4 py-3 bg-white/90 backdrop-blur-sm border-t border-[#F0E4DB]">
       <button
         onClick={() => fileInputRef.current?.click()}
         disabled={disabled || uploading}
-        className="shrink-0 w-10 h-10 rounded-xl bg-[#FFF5F5] border border-[#F0E0E0] text-gray-400 flex items-center justify-center hover:bg-[#FDE8E8] transition-colors disabled:opacity-50"
+        className="shrink-0 w-10 h-10 rounded-xl bg-[#FFF8F5] border border-[#F0E4DB] text-gray-400 flex items-center justify-center hover:bg-[#FFF0ED] transition-colors disabled:opacity-50"
       >
         {uploading ? (
           <span className="text-xs">...</span>
@@ -89,12 +89,12 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
         placeholder="跟妈妈说说话..."
         disabled={disabled}
         rows={1}
-        className="flex-1 resize-none rounded-xl px-4 py-2.5 text-sm bg-[#FFF5F5] border border-[#F0E0E0] focus:outline-none focus:border-[#E8B4B8] text-gray-800 placeholder-gray-400 disabled:opacity-50"
+        className="flex-1 resize-none rounded-xl px-4 py-2.5 text-sm bg-[#FFF8F5] border border-[#F0E4DB] focus:outline-none focus:border-[#E8998B] text-gray-800 placeholder-gray-400 disabled:opacity-50"
       />
       <button
         onClick={handleSend}
         disabled={disabled || !input.trim()}
-        className="shrink-0 w-12 h-10 rounded-xl bg-[#E8B4B8] text-white font-medium text-sm flex items-center justify-center hover:bg-[#D4A0A4] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        className="shrink-0 w-12 h-10 rounded-xl bg-[#E8998B] text-white font-medium text-sm flex items-center justify-center hover:bg-[#D48275] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
       >
         发送
       </button>

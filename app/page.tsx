@@ -151,19 +151,19 @@ export default function HomePage() {
 
   if (!mother) {
     return (
-      <div className="h-screen bg-[#FFF5F5] flex items-center justify-center">
+      <div className="h-screen bg-[#FFF8F5] flex items-center justify-center">
         <div className="text-gray-400 text-sm">加载中...</div>
       </div>
     )
   }
 
   return (
-    <div className="h-screen bg-[#FFF5F5] flex flex-col max-w-lg mx-auto">
-      <header className="flex items-center gap-3 px-4 py-3 bg-white/90 backdrop-blur-sm border-b border-[#F0E0E0]">
+    <div className="h-screen bg-[#FFF8F5] flex flex-col max-w-lg mx-auto">
+      <header className="flex items-center gap-3 px-4 py-3 bg-white/90 backdrop-blur-sm border-b border-[#F0E4DB]">
         <Link href="/settings" className="shrink-0">
           <div
             className="w-11 h-11 rounded-full flex items-center justify-center text-2xl hover:opacity-80 transition-opacity cursor-pointer"
-            style={{ backgroundColor: "#FDE8E8" }}
+            style={{ backgroundColor: "#FFF0ED" }}
           >
             {mother.avatarUrl || "🌸"}
           </div>
@@ -185,7 +185,7 @@ export default function HomePage() {
       />
 
       {limitReached && (
-        <div className="px-4 py-3 text-center text-sm text-[#E8B4B8] bg-white/90 border-t border-[#F0E0E0]">
+        <div className="px-4 py-3 text-center text-sm text-[#E8998B] bg-white/90 border-t border-[#F0E4DB]">
           这次体验已经结束了，谢谢你陪她聊了这么久。
         </div>
       )}

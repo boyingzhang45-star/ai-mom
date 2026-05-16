@@ -3,7 +3,7 @@
 import { useState } from "react"
 
 const AVATARS = [
-  { id: "1", emoji: "🌸", color: "#FDE8E8", label: "温柔" },
+  { id: "1", emoji: "🌸", color: "#FFF0ED", label: "温柔" },
   { id: "2", emoji: "🌺", color: "#FCE4EC", label: "热情" },
   { id: "3", emoji: "🌼", color: "#FFF8E1", label: "阳光" },
   { id: "4", emoji: "💐", color: "#F3E5F5", label: "优雅" },
@@ -63,7 +63,7 @@ export default function MotherCreator({ onSave, saving, initialData }: MotherCre
     <div className="flex flex-col h-full">
       {step === 1 && (
         <div className="flex-1 flex flex-col items-center justify-center px-8 py-12">
-          <div className="text-6xl mb-6">🏠</div>
+          <img src="/images/logo.jpg" alt="" className="w-24 h-24 rounded-2xl mb-6 object-cover" />
           <h2 className="text-2xl font-semibold text-gray-800 mb-3">创建你的 AI 母亲</h2>
           <p className="text-gray-500 text-sm text-center mb-8">
             她会一直陪伴你、关心你、记住你说的每一件事
@@ -77,13 +77,13 @@ export default function MotherCreator({ onSave, saving, initialData }: MotherCre
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 placeholder="如：小明、宝贝"
-                className="w-full px-4 py-3 rounded-xl border border-[#F0E0E0] bg-[#FFF5F5] text-gray-800 text-sm focus:outline-none focus:border-[#E8B4B8] placeholder-gray-400"
+                className="w-full px-4 py-3 rounded-xl border border-[#F0E4DB] bg-[#FFF8F5] text-gray-800 text-sm focus:outline-none focus:border-[#E8998B] placeholder-gray-400"
               />
             </div>
             <button
               onClick={() => nickname.trim() && setStep(2)}
               disabled={!nickname.trim()}
-              className="w-full py-3 rounded-xl bg-[#E8B4B8] text-white font-medium hover:bg-[#D4A0A4] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full py-3 rounded-xl bg-[#E8998B] text-white font-medium hover:bg-[#D48275] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               继续
             </button>
@@ -103,7 +103,7 @@ export default function MotherCreator({ onSave, saving, initialData }: MotherCre
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="如：李妈妈"
-                className="w-full px-4 py-3 rounded-xl border border-[#F0E0E0] bg-[#FFF5F5] text-gray-800 text-sm focus:outline-none focus:border-[#E8B4B8]"
+                className="w-full px-4 py-3 rounded-xl border border-[#F0E4DB] bg-[#FFF8F5] text-gray-800 text-sm focus:outline-none focus:border-[#E8998B]"
               />
             </div>
 
@@ -116,7 +116,7 @@ export default function MotherCreator({ onSave, saving, initialData }: MotherCre
                   max={65}
                   value={age}
                   onChange={(e) => setAge(Number(e.target.value))}
-                  className="flex-1 accent-[#E8B4B8]"
+                  className="flex-1 accent-[#E8998B]"
                 />
                 <span className="text-sm text-gray-700 w-12 text-right">{age}岁</span>
               </div>
@@ -131,8 +131,8 @@ export default function MotherCreator({ onSave, saving, initialData }: MotherCre
                     onClick={() => setPersonality(p.value)}
                     className={`w-full text-left px-4 py-3 rounded-xl border transition-colors ${
                       personality === p.value
-                        ? "border-[#E8B4B8] bg-[#FFF5F5]"
-                        : "border-[#F0E0E0] bg-white hover:bg-[#FFF8F8]"
+                        ? "border-[#E8998B] bg-[#FFF8F5]"
+                        : "border-[#F0E4DB] bg-white hover:bg-[#FFF3F0]"
                     }`}
                   >
                     <div className="font-medium text-sm text-gray-800">{p.label}</div>
@@ -151,7 +151,7 @@ export default function MotherCreator({ onSave, saving, initialData }: MotherCre
                     onClick={() => setAvatarUrl(a.emoji)}
                     className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-all ${
                       avatarUrl === a.emoji
-                        ? "ring-2 ring-[#E8B4B8] ring-offset-2 scale-110"
+                        ? "ring-2 ring-[#E8998B] ring-offset-2 scale-110"
                         : "hover:scale-105"
                     }`}
                     style={{ backgroundColor: a.color }}
@@ -172,21 +172,21 @@ export default function MotherCreator({ onSave, saving, initialData }: MotherCre
                 onChange={(e) => setFamilyDescription(e.target.value)}
                 placeholder="如：妈妈是退休教师，和爸爸住在老家，孩子在外地工作..."
                 rows={3}
-                className="w-full px-4 py-3 rounded-xl border border-[#F0E0E0] bg-[#FFF5F5] text-gray-800 text-sm focus:outline-none focus:border-[#E8B4B8] placeholder-gray-400 resize-none"
+                className="w-full px-4 py-3 rounded-xl border border-[#F0E4DB] bg-[#FFF8F5] text-gray-800 text-sm focus:outline-none focus:border-[#E8998B] placeholder-gray-400 resize-none"
               />
             </div>
 
             <div className="flex gap-3 pt-4">
               <button
                 onClick={() => setStep(1)}
-                className="flex-1 py-3 rounded-xl border border-[#F0E0E0] bg-white text-gray-600 font-medium hover:bg-gray-50 transition-colors"
+                className="flex-1 py-3 rounded-xl border border-[#F0E4DB] bg-white text-gray-600 font-medium hover:bg-gray-50 transition-colors"
               >
                 上一步
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={!name.trim() || saving}
-                className="flex-1 py-3 rounded-xl bg-[#E8B4B8] text-white font-medium hover:bg-[#D4A0A4] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex-1 py-3 rounded-xl bg-[#E8998B] text-white font-medium hover:bg-[#D48275] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {saving ? "创建中..." : "创建母亲"}
               </button>
