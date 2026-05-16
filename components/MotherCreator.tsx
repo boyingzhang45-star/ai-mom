@@ -63,7 +63,7 @@ export default function MotherCreator({ onSave, saving, initialData }: MotherCre
     <div className="flex flex-col h-full">
       {step === 1 && (
         <div className="flex-1 flex flex-col items-center justify-center px-8 py-12">
-          <img src="/images/logo.jpg" alt="" className="w-24 h-24 mb-6 object-cover" />
+          <img src="/images/logo.jpg" alt="" className="w-24 h-24 mb-6 object-contain mix-blend-multiply" />
           <h2 className="text-2xl font-semibold text-gray-800 mb-3">创建你的 AI 母亲</h2>
           <p className="text-gray-500 text-sm text-center mb-8">
             她会一直陪伴你、关心你、记住你说的每一件事
