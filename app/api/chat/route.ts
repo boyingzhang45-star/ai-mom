@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db"
 import { streamChat } from "@/lib/ai"
 import { buildSystemPrompt } from "@/lib/prompt"
 import { getRelevantMemories, extractMemories } from "@/lib/memory"
-import { canSendMessage, getRemainingMessages } from "@/lib/seed-limit"
+import { canSendMessage, useMessageQuota } from "@/lib/subscription"
 
 export async function POST(request: Request) {
   const body = await request.json()
@@ -24,22 +24,32 @@ export async function POST(request: Request) {
     )
   }
 
-  const allowed = await canSendMessage(userId)
-  if (!allowed) {
+  // 图片权限：仅 Pro 可发
+  if (imageUrl && user.subscriptionStatus !== "pro") {
     return Response.json(
-      { error: "LIMIT_REACHED", message: "本次体验已结束，感谢你的参与反馈。" },
+      { success: false, needUpgrade: true, message: "图片功能是 Pro 专属" },
       { status: 403 }
     )
   }
+
+  // 检查额度
+  const permission = await canSendMessage(userId)
+  if (!permission.allowed) {
+    return Response.json(
+      { success: false, needUpgrade: true, remaining: 0, message: "免费额度已用完" },
+      { status: 403 }
+    )
+  }
+
+  // 扣减免费额度
+  await useMessageQuota(userId)
 
   let conversation = await prisma.conversation.findFirst({
     where: conversationId ? { id: conversationId } : { userId },
     orderBy: { updatedAt: "desc" },
   })
   if (!conversation) {
-    conversation = await prisma.conversation.create({
-      data: { userId },
-    })
+    conversation = await prisma.conversation.create({ data: { userId } })
   }
 
   await prisma.message.create({
@@ -87,7 +97,6 @@ export async function POST(request: Request) {
     const reader = stream.getReader()
     let fullResponse = ""
 
-    // 先读完 AI 的全部回复
     while (true) {
       const { done, value } = await reader.read()
       if (done) break
@@ -96,22 +105,17 @@ export async function POST(request: Request) {
 
     yield `${convId}\n`
 
-    // 关系节奏感：回复时间不固定，模拟真实妈妈的节奏
     const len = fullResponse.length
     let delay: number
     if (len <= 3) {
-      // "嗯" "好" "知道了" → 很快（1-3s，妈妈秒回）
       delay = 1000 + Math.random() * 2000
     } else if (len <= 30) {
-      // 简短日常回复 → 中等（3-8s，妈妈看了一眼，想了想）
       delay = 3000 + Math.random() * 5000
     } else {
-      // 较长回复 → 慢一些（5-15s，妈妈认真打字）
       delay = 5000 + Math.random() * 10000
     }
     await sleep(delay)
 
-    // 一次性发出完整消息
     yield fullResponse
 
     await prisma.message.create({

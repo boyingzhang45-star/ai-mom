@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import ChatList from "@/components/ChatList"
 import ChatInput from "@/components/ChatInput"
+import UpgradeModal from "@/components/UpgradeModal"
 import { getUserId } from "@/lib/user-id"
 
 interface MotherProfile {
@@ -30,9 +31,38 @@ export default function HomePage() {
   const [, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [conversationId, setConversationId] = useState<string | null>(null)
-
+  const [isPro, setIsPro] = useState(false)
+  const [remaining, setRemaining] = useState(20)
+  const [showUpgrade, setShowUpgrade] = useState(false)
   const [limitReached, setLimitReached] = useState(false)
   const userId = getUserId()
+
+  // 加载用户会员状态
+  useEffect(() => {
+    fetch(`/api/user-status?userId=${userId}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setIsPro(d.isPro)
+        setRemaining(d.remaining)
+      })
+      .catch(() => {})
+  }, [userId])
+
+  // Stripe 支付回调
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get("upgrade") === "success") {
+      setShowUpgrade(false)
+      window.history.replaceState({}, "", "/")
+      // 重新获取状态
+      fetch(`/api/user-status?userId=${userId}`)
+        .then((r) => r.json())
+        .then((d) => {
+          setIsPro(d.isPro)
+          setRemaining(d.remaining)
+        })
+    }
+  }, [userId])
 
   const loadMessages = useCallback(async () => {
     try {
@@ -96,6 +126,11 @@ export default function HomePage() {
 
       if (!res.ok) {
         const err = await res.json()
+        if (err.needUpgrade) {
+          setShowUpgrade(true)
+          setSending(false)
+          return
+        }
         if (err.error === "LIMIT_REACHED") {
           setLimitReached(true)
           return
@@ -173,9 +208,21 @@ export default function HomePage() {
             <h1 className="font-medium text-gray-800 text-sm truncate">{mother.name}</h1>
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0" />
           </div>
-          <p className="text-xs text-gray-400">在线 · {mother.age}岁</p>
-        </div>
-      </header>
+          {isPro ? (
+              <p className="text-xs text-[#E8998B] font-medium">Pro 会员</p>
+            ) : (
+              <p className="text-xs text-gray-400">
+                剩余 {remaining} 条 ·{" "}
+                <button
+                  onClick={() => setShowUpgrade(true)}
+                  className="text-[#E8998B] underline underline-offset-2"
+                >
+                  升级
+                </button>
+              </p>
+            )}
+          </div>
+        </header>
 
       <ChatList
         messages={messages}
@@ -190,8 +237,19 @@ export default function HomePage() {
         </div>
       )}
       {!limitReached && (
-        <ChatInput onSend={handleSend} disabled={sending} />
+        <ChatInput
+          onSend={handleSend}
+          disabled={sending}
+          isPro={isPro}
+          onImageBlocked={() => setShowUpgrade(true)}
+        />
       )}
+
+      <UpgradeModal
+        isOpen={showUpgrade}
+        onClose={() => setShowUpgrade(false)}
+        remaining={remaining}
+      />
     </div>
   )
 }

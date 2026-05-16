@@ -5,9 +5,11 @@ import { useState, useRef, useEffect } from "react"
 interface ChatInputProps {
   onSend: (data: { text?: string; imageUrl?: string }) => void
   disabled?: boolean
+  isPro?: boolean
+  onImageBlocked?: () => void
 }
 
-export default function ChatInput({ onSend, disabled }: ChatInputProps) {
+export default function ChatInput({ onSend, disabled, isPro, onImageBlocked }: ChatInputProps) {
   const [input, setInput] = useState("")
   const [uploading, setUploading] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -40,6 +42,12 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
   const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
+
+    if (!isPro) {
+      onImageBlocked?.()
+      if (fileInputRef.current) fileInputRef.current.value = ""
+      return
+    }
 
     setUploading(true)
     try {
