@@ -1,4 +1,4 @@
-import { stripe, PRO_PRICE_ID } from "@/lib/stripe"
+import { getStripe, PRO_PRICE_ID } from "@/lib/stripe"
 import { prisma } from "@/lib/db"
 
 export async function POST(request: Request) {
@@ -7,6 +7,8 @@ export async function POST(request: Request) {
     if (!userId) {
       return Response.json({ error: "缺少 userId" }, { status: 400 })
     }
+
+    const stripe = getStripe()
 
     let user = await prisma.user.findUnique({ where: { id: userId } })
     if (!user) {
