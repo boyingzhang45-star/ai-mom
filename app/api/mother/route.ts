@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: "需要 userId" }, { status: 400 })
   }
 
-  let user = await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { id: userId },
     include: { motherProfile: true },
   })

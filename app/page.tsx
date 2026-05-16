@@ -26,25 +26,11 @@ export default function HomePage() {
   const [mother, setMother] = useState<MotherProfile | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [streamingContent, setStreamingContent] = useState("")
-  const [loading, setLoading] = useState(true)
+  const [, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [conversationId, setConversationId] = useState<string | null>(null)
 
   const userId = "default-user"
-
-  useEffect(() => {
-    fetch(`/api/mother?userId=${userId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.user?.motherProfile) {
-          setMother(data.user.motherProfile)
-          loadMessages()
-        } else {
-          router.push("/onboarding")
-        }
-      })
-      .catch(() => setLoading(false))
-  }, [])
 
   const loadMessages = useCallback(async () => {
     try {
@@ -59,7 +45,21 @@ export default function HomePage() {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [userId])
+
+  useEffect(() => {
+    fetch(`/api/mother?userId=${userId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user?.motherProfile) {
+          setMother(data.user.motherProfile)
+          loadMessages()
+        } else {
+          router.push("/onboarding")
+        }
+      })
+      .catch(() => setLoading(false))
+  }, [loadMessages, router, userId])
 
   const handleSend = async (data: { text?: string; imageUrl?: string }) => {
     if (sending) return
