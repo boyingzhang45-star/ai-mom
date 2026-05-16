@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db"
+import { canRegister } from "@/lib/seed-limit"
 import { NextRequest } from "next/server"
 
 export async function GET(request: NextRequest) {
@@ -48,6 +49,15 @@ export async function POST(request: Request) {
       data: { name, age, personality, avatarUrl, familyDescription },
     })
   } else {
+    // 检查内测名额
+    const allowed = await canRegister()
+    if (!allowed) {
+      return Response.json(
+        { error: "LIMIT_REACHED", message: "内测名额已满，感谢你的关注。" },
+        { status: 403 }
+      )
+    }
+
     mother = await prisma.motherProfile.create({
       data: { userId, name, age, personality, avatarUrl, familyDescription },
     })

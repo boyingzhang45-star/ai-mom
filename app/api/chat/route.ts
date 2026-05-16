@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db"
 import { streamChat } from "@/lib/ai"
 import { buildSystemPrompt } from "@/lib/prompt"
 import { getRelevantMemories, extractMemories } from "@/lib/memory"
+import { canSendMessage, getRemainingMessages } from "@/lib/seed-limit"
 
 export async function POST(request: Request) {
   const body = await request.json()
@@ -20,6 +21,14 @@ export async function POST(request: Request) {
     return Response.json(
       { error: "请先创建母亲角色" },
       { status: 400 }
+    )
+  }
+
+  const allowed = await canSendMessage(userId)
+  if (!allowed) {
+    return Response.json(
+      { error: "LIMIT_REACHED", message: "本次体验已结束，感谢你的参与反馈。" },
+      { status: 403 }
     )
   }
 

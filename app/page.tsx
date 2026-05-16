@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import ChatList from "@/components/ChatList"
 import ChatInput from "@/components/ChatInput"
+import { getUserId } from "@/lib/user-id"
 
 interface MotherProfile {
   name: string
@@ -30,7 +31,8 @@ export default function HomePage() {
   const [sending, setSending] = useState(false)
   const [conversationId, setConversationId] = useState<string | null>(null)
 
-  const userId = "default-user"
+  const [limitReached, setLimitReached] = useState(false)
+  const userId = getUserId()
 
   const loadMessages = useCallback(async () => {
     try {
@@ -94,6 +96,10 @@ export default function HomePage() {
 
       if (!res.ok) {
         const err = await res.json()
+        if (err.error === "LIMIT_REACHED") {
+          setLimitReached(true)
+          return
+        }
         throw new Error(err.error || "发送失败")
       }
 
@@ -178,7 +184,14 @@ export default function HomePage() {
         isTyping={sending && !streamingContent}
       />
 
-      <ChatInput onSend={handleSend} disabled={sending} />
+      {limitReached && (
+        <div className="px-4 py-3 text-center text-sm text-[#E8B4B8] bg-white/90 border-t border-[#F0E0E0]">
+          这次体验已经结束了，谢谢你陪她聊了这么久。
+        </div>
+      )}
+      {!limitReached && (
+        <ChatInput onSend={handleSend} disabled={sending} />
+      )}
     </div>
   )
 }
