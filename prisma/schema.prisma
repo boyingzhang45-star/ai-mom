@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  nickname  String   @default("孩子")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  motherProfile    MotherProfile?
+  conversations    Conversation[]
+  longTermMemories LongTermMemory[]
+}
+
+model MotherProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  name        String   @default("妈妈")
+  age         Int      @default(45)
+  personality String   @default("gentle")
+  avatarUrl         String?
+  familyDescription String?  // 家庭现状描述
+  createdAt         DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Conversation {
+  id        String    @id @default(uuid())
+  userId    String
+  title     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id])
+  messages Message[]
+}
+
+model Message {
+  id             String   @id @default(uuid())
+  conversationId String
+  role           String
+  content        String
+  imageUrl       String?
+  emotion        String?
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+model LongTermMemory {
+  id          String   @id @default(uuid())
+  userId      String
+  category    String
+  content     String
+  importance  Int      @default(5)
+  sourceMsgId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
