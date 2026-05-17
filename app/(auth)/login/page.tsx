@@ -41,7 +41,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-[#FFF7F0] flex items-center justify-center px-6">
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <img src="/images/logo.jpg" alt="" className="w-64 h-64 mb-6 object-contain mix-blend-multiply" />
+          <img src="/images/logo.jpg" alt="" className="w-64 h-64 mb-6 object-contain mix-blend-multiply mx-auto" />
           <h1 className="text-xl font-semibold text-gray-800 mb-2">
             你回来了。
           </h1>
@@ -52,24 +52,24 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm text-gray-600 mb-2">邮箱</label>
+            <label className="block text-sm text-gray-600 mb-2 text-center">邮箱</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
-              className="w-full px-4 py-3 rounded-xl border border-[#F0E0CF] bg-white text-gray-800 text-sm focus:outline-none focus:border-[#E8927C]"
+              className="w-full px-4 py-3 rounded-xl border border-[#F0E0CF] bg-white text-gray-800 text-sm focus:outline-none focus:border-[#E8927C] text-center"
             />
           </div>
 
           <div>
-            <label className="block text-sm text-gray-600 mb-2">密码</label>
+            <label className="block text-sm text-gray-600 mb-2 text-center">密码</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="输入密码"
-              className="w-full px-4 py-3 rounded-xl border border-[#F0E0CF] bg-white text-gray-800 text-sm focus:outline-none focus:border-[#E8927C]"
+              className="w-full px-4 py-3 rounded-xl border border-[#F0E0CF] bg-white text-gray-800 text-sm focus:outline-none focus:border-[#E8927C] text-center"
             />
           </div>
 
