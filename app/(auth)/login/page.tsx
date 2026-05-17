@@ -39,7 +39,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#FFF7F0] flex items-center justify-center px-6">
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-sm animate-fade-in">
         <div className="text-center mb-10">
           <img src="/images/logo.jpg" alt="" className="w-64 h-64 mb-6 object-contain mix-blend-multiply mx-auto" />
           <h1 className="text-xl font-semibold text-gray-800">你回来了</h1>
