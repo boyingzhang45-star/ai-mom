@@ -3,6 +3,8 @@ import { streamChat } from "@/lib/ai"
 import { buildSystemPrompt } from "@/lib/prompt"
 import { getRelevantMemories, extractMemories } from "@/lib/memory"
 import { canSendMessage, useMessageQuota } from "@/lib/subscription"
+import { rateLimit, LIMITS } from "@/lib/rate-limit"
+import { sanitizeInput, detectPromptInjection } from "@/lib/security"
 
 export async function POST(request: Request) {
   const body = await request.json()
@@ -10,6 +12,21 @@ export async function POST(request: Request) {
 
   if (!userId || !message) {
     return Response.json({ error: "需要 userId 和 message" }, { status: 400 })
+  }
+
+  // 限流
+  const rl = rateLimit(`chat:${userId}`, LIMITS.chat)
+  if (!rl.allowed) {
+    return Response.json({ error: "请求太频繁，请稍后再试" }, { status: 429 })
+  }
+
+  // 输入安全检查
+  const cleaned = sanitizeInput(message)
+  if (cleaned.length === 0) {
+    return Response.json({ error: "消息内容无效" }, { status: 400 })
+  }
+  if (detectPromptInjection(cleaned)) {
+    return Response.json({ error: "消息内容无效" }, { status: 400 })
   }
 
   const user = await prisma.user.findUnique({
@@ -56,7 +73,7 @@ export async function POST(request: Request) {
     data: {
       conversationId: conversation.id,
       role: "user",
-      content: message,
+      content: cleaned,
       imageUrl: imageUrl || null,
     },
   })

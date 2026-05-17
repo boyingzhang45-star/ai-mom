@@ -1,8 +1,15 @@
 import { prisma } from "@/lib/db"
 import { verifyPassword, setSession } from "@/lib/auth"
 import { getUserStatus } from "@/lib/subscription"
+import { rateLimit, LIMITS } from "@/lib/rate-limit"
 
 export async function POST(request: Request) {
+  // 登录限流
+  const rl = rateLimit("login", LIMITS.login)
+  if (!rl.allowed) {
+    return Response.json({ error: "登录太频繁，请稍后再试" }, { status: 429 })
+  }
+
   const { email, phone, password } = await request.json()
 
   if (!email && !phone) {
