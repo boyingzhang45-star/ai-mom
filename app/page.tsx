@@ -85,16 +85,22 @@ export default function HomePage() {
   useEffect(() => {
     if (!userId) return
 
-    // 优先从 sessionStorage 读刚创建的母亲
-    const cached = sessionStorage.getItem("mom_profile")
-    if (cached) {
+    // 优先从缓存读刚创建的母亲
+    const cached = sessionStorage.getItem("mom_new") || localStorage.getItem("mom_new")
+    const isNew = new URLSearchParams(window.location.search).has("new")
+    if (cached || isNew) {
       try {
-        const mom = JSON.parse(cached)
-        sessionStorage.removeItem("mom_profile")
-        setMother(mom)
-        setLoading(false)
-        loadMessages()
-        return
+        if (cached) {
+          const mom = JSON.parse(cached)
+          sessionStorage.removeItem("mom_new")
+          localStorage.removeItem("mom_new")
+          setMother(mom)
+          setLoading(false)
+          setAuthChecked(true)
+          loadMessages()
+          if (isNew) window.history.replaceState({}, "", "/")
+          return
+        }
       } catch {}
     }
 

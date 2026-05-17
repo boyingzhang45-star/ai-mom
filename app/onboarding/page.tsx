@@ -40,8 +40,10 @@ export default function OnboardingPage() {
       }
 
       const result = await res.json()
-      sessionStorage.setItem("mom_profile", JSON.stringify(result.mother))
-      window.location.href = "/"
+      const momData = JSON.stringify({ name: result.mother.name, age: result.mother.age, personality: result.mother.personality, avatarUrl: result.mother.avatarUrl })
+      sessionStorage.setItem("mom_new", momData)
+      localStorage.setItem("mom_new", momData)
+      window.location.href = "/?new=1"
     } catch (e) {
       setError(e instanceof Error ? e.message : "创建失败，请重试")
     } finally {
