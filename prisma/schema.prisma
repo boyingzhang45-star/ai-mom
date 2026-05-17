@@ -123,3 +123,13 @@ model MessageUsage {
 
   user User @relation(fields: [userId], references: [id])
 }
+
+model ErrorLog {
+  id        String   @id @default(uuid())
+  level     String   @default("error")  // error | warn | info
+  source    String                      // chat | auth | payment | upload | api
+  message   String
+  detail    String   @default("")
+  userId    String   @default("")
+  createdAt DateTime @default(now())
+}

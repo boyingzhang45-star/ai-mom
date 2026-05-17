@@ -5,6 +5,7 @@ import { getRelevantMemories, extractMemories } from "@/lib/memory"
 import { canSendMessage, useMessageQuota } from "@/lib/subscription"
 import { rateLimit, LIMITS } from "@/lib/rate-limit"
 import { sanitizeInput, detectPromptInjection } from "@/lib/security"
+import { log } from "@/lib/logger"
 
 export async function POST(request: Request) {
   const body = await request.json()
@@ -152,7 +153,7 @@ export async function POST(request: Request) {
     extractMemories(
       userId,
       allMessages.reverse().map((m: { role: string; content: string }) => ({ role: m.role, content: m.content }))
-    ).catch(console.error)
+    ).catch((e) => log({ level: "error", source: "chat", message: "记忆提取失败", detail: String(e), userId }))
   }
 
   const responseStream = new ReadableStream({
