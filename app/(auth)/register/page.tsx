@@ -50,7 +50,7 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-[#FFF8F5] flex items-center justify-center px-6">
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <img src="/images/logo.jpg" alt="" className="w-20 h-20 mb-4 object-contain" />
+          <img src="/images/logo.jpg" alt="" className="w-20 h-20 mb-4 object-contain mix-blend-multiply" />
           <h1 className="text-xl font-semibold text-gray-800 mb-2">
             让她真正记住你。
           </h1>
