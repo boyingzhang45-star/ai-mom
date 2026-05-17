@@ -39,7 +39,8 @@ export default function OnboardingPage() {
         throw new Error(json.error || "创建失败")
       }
 
-      sessionStorage.setItem("mom_just_created", userId)
+      const result = await res.json()
+      sessionStorage.setItem("mom_profile", JSON.stringify(result.mother))
       window.location.href = "/"
     } catch (e) {
       setError(e instanceof Error ? e.message : "创建失败，请重试")

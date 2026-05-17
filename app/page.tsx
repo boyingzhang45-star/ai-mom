@@ -85,27 +85,31 @@ export default function HomePage() {
   useEffect(() => {
     if (!userId) return
 
-    const justCreated = sessionStorage.getItem("mom_just_created")
-    const doCheck = (retries: number) => {
-      fetch(`/api/mother?userId=${userId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.user?.motherProfile) {
-            if (justCreated) sessionStorage.removeItem("mom_just_created")
-            setMother(data.user.motherProfile)
-            loadMessages()
-          } else if (retries > 0) {
-            setTimeout(() => doCheck(retries - 1), 800)
-          } else {
-            router.push("/onboarding")
-          }
-        })
-        .catch(() => {
-          if (retries > 0) setTimeout(() => doCheck(retries - 1), 800)
-          else setLoading(false)
-        })
+    // 优先从 sessionStorage 读刚创建的母亲
+    const cached = sessionStorage.getItem("mom_profile")
+    if (cached) {
+      try {
+        const mom = JSON.parse(cached)
+        sessionStorage.removeItem("mom_profile")
+        setMother(mom)
+        setLoading(false)
+        loadMessages()
+        return
+      } catch {}
     }
-    doCheck(justCreated ? 5 : 0)
+
+    // 正常流程：查 API
+    fetch(`/api/mother?userId=${userId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user?.motherProfile) {
+          setMother(data.user.motherProfile)
+          loadMessages()
+        } else {
+          router.push("/onboarding")
+        }
+      })
+      .catch(() => setLoading(false))
   }, [userId])
 
   const handleSend = async (data: { text?: string; imageUrl?: string }) => {
