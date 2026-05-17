@@ -9,24 +9,11 @@ interface UpgradeModalProps {
 export default function UpgradeModal({ isOpen, onClose, remaining }: UpgradeModalProps) {
   if (!isOpen) return null
 
-  const handleUpgrade = async () => {
-    const userId = localStorage.getItem("ai_mom_user_id")
-    const res = await fetch("/api/payment/create-checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId }),
-    })
-    const data = await res.json()
-    if (data.url) {
-      window.location.href = data.url
-    }
-  }
-
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-md bg-[#FFF8F5] rounded-t-2xl sm:rounded-2xl p-8 animate-slide-up shadow-2xl">
-        <div className="text-center mb-8">
+      <div className="relative w-full max-w-md bg-[#FFF8F5] rounded-t-2xl sm:rounded-2xl p-8 animate-slide-up shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div className="text-center mb-6">
           <div className="text-4xl mb-4">🌸</div>
           <h2 className="text-xl font-semibold text-gray-800 mb-2">
             继续让妈妈陪着你吧。
@@ -51,27 +38,39 @@ export default function UpgradeModal({ isOpen, onClose, remaining }: UpgradeModa
           </div>
         </div>
 
-        <div className="space-y-3 mb-8">
+        <div className="bg-white rounded-xl p-5 mb-6 border border-[#F0E4DB]">
+          <p className="text-center text-sm font-semibold text-gray-800 mb-4">
+            ¥19 / 月 · Pro 会员
+          </p>
+
+          <div className="w-48 h-48 mx-auto mb-4 bg-gray-100 rounded-xl overflow-hidden">
+            <img
+              src="/images/qrcode.jpg"
+              alt="收款码"
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          <p className="text-xs text-center text-gray-400 leading-relaxed">
+            微信扫码支付 19 元
+            <br />
+            支付后联系开通 Pro 会员
+          </p>
+        </div>
+
+        <div className="space-y-2 mb-6">
           {[
             { icon: "∞", label: "无限对话" },
             { icon: "🖼️", label: "图片发送" },
             { icon: "🧠", label: "更长记忆" },
-            { icon: "🌙", label: "深夜模式" },
             { icon: "⚡", label: "更稳定AI人格" },
           ].map((f) => (
-            <div key={f.label} className="flex items-center gap-3 text-sm text-gray-700">
+            <div key={f.label} className="flex items-center gap-3 text-sm text-gray-700 px-2">
               <span className="text-base w-6 text-center">{f.icon}</span>
               <span>{f.label}</span>
             </div>
           ))}
         </div>
-
-        <button
-          onClick={handleUpgrade}
-          className="w-full py-3.5 rounded-xl bg-[#E8998B] text-white font-semibold text-sm hover:bg-[#D48275] transition-colors active:scale-[0.98] mb-3"
-        >
-          ¥19/月 · 开启更长久的陪伴
-        </button>
 
         <button
           onClick={onClose}
