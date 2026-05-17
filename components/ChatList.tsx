@@ -52,7 +52,7 @@ export default function ChatList({ messages, streamingContent, motherAvatar, isT
       ))}
       {isTyping && (
         <div className="flex gap-3 px-4 py-2">
-          <div className="w-10 h-10 rounded-full bg-[#E8998B] flex items-center justify-center text-white text-sm font-medium shrink-0">
+          <div className="w-10 h-10 rounded-full bg-[#E8927C] flex items-center justify-center text-white text-sm font-medium shrink-0">
             妈
           </div>
           <div className="bg-white px-4 py-3 rounded-2xl rounded-tl-sm" style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}>

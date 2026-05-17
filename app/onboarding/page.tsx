@@ -49,7 +49,7 @@ export default function OnboardingPage() {
 
   if (limitReached) {
     return (
-      <div className="h-screen bg-[#FFF8F5] flex flex-col items-center justify-center px-8 text-center">
+      <div className="h-screen bg-[#FFF7F0] flex flex-col items-center justify-center px-8 text-center">
         <div className="text-5xl mb-6">🌸</div>
         <h2 className="text-xl font-semibold text-gray-800 mb-3">内测名额已满</h2>
         <p className="text-gray-500 text-sm leading-relaxed">
@@ -62,7 +62,7 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="h-screen bg-[#FFF8F5] flex flex-col">
+    <div className="h-screen bg-[#FFF7F0] flex flex-col">
       <MotherCreator onSave={handleSave} saving={saving} />
       {error && (
         <div className="px-8 pb-4">

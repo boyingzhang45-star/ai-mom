@@ -189,7 +189,7 @@ export default function HomePage() {
 
   if (!authChecked) {
     return (
-      <div className="h-screen bg-[#FFF8F5] flex items-center justify-center">
+      <div className="h-screen bg-[#FFF7F0] flex items-center justify-center">
         <div className="text-gray-400 text-sm">加载中...</div>
       </div>
     )
@@ -197,19 +197,19 @@ export default function HomePage() {
 
   if (!mother) {
     return (
-      <div className="h-screen bg-[#FFF8F5] flex items-center justify-center">
+      <div className="h-screen bg-[#FFF7F0] flex items-center justify-center">
         <div className="text-gray-400 text-sm">加载中...</div>
       </div>
     )
   }
 
   return (
-    <div className="h-screen bg-[#FFF8F5] flex flex-col max-w-lg mx-auto">
-      <header className="flex items-center gap-3 px-4 py-3 bg-white/90 backdrop-blur-sm border-b border-[#F0E4DB]">
+    <div className="h-screen bg-[#FFF7F0] flex flex-col max-w-lg mx-auto">
+      <header className="flex items-center gap-3 px-4 py-3 bg-white/90 backdrop-blur-sm border-b border-[#F0E0CF]">
         <Link href="/settings" className="shrink-0">
           <div
             className="w-11 h-11 rounded-full flex items-center justify-center text-2xl hover:opacity-80 transition-opacity cursor-pointer"
-            style={{ backgroundColor: "#FFF0ED" }}
+            style={{ backgroundColor: "#FFF0EB" }}
           >
             {mother.avatarUrl || "🌸"}
           </div>
@@ -220,13 +220,13 @@ export default function HomePage() {
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0" />
           </div>
           {isPro ? (
-              <p className="text-xs text-[#E8998B] font-medium">Pro 会员</p>
+              <p className="text-xs text-[#E8927C] font-medium">Pro 会员</p>
             ) : (
               <p className="text-xs text-gray-400">
                 剩余 {remaining} 条 ·{" "}
                 <button
                   onClick={() => setShowUpgrade(true)}
-                  className="text-[#E8998B] underline underline-offset-2"
+                  className="text-[#E8927C] underline underline-offset-2"
                 >
                   升级
                 </button>
@@ -243,7 +243,7 @@ export default function HomePage() {
       />
 
       {limitReached && (
-        <div className="px-4 py-3 text-center text-sm text-[#E8998B] bg-white/90 border-t border-[#F0E4DB]">
+        <div className="px-4 py-3 text-center text-sm text-[#E8927C] bg-white/90 border-t border-[#F0E0CF]">
           这次体验已经结束了，谢谢你陪她聊了这么久。
         </div>
       )}

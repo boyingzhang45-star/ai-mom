@@ -47,10 +47,10 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF8F5] flex items-center justify-center px-6">
+    <div className="min-h-screen bg-[#FFF7F0] flex items-center justify-center px-6">
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <img src="/images/logo.jpg" alt="" className="w-20 h-20 mb-4 object-contain mix-blend-multiply" />
+          <img src="/images/logo.jpg" alt="" className="w-32 h-32 mb-6 object-contain mix-blend-multiply mx-auto" />
           <h1 className="text-xl font-semibold text-gray-800 mb-2">
             让她真正记住你。
           </h1>
@@ -67,7 +67,7 @@ export default function RegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
-              className="w-full px-4 py-3 rounded-xl border border-[#F0E4DB] bg-white text-gray-800 text-sm focus:outline-none focus:border-[#E8998B]"
+              className="w-full px-4 py-3 rounded-xl border border-[#F0E0CF] bg-white text-gray-800 text-sm focus:outline-none focus:border-[#E8927C]"
             />
           </div>
 
@@ -78,7 +78,7 @@ export default function RegisterPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="至少6位"
-              className="w-full px-4 py-3 rounded-xl border border-[#F0E4DB] bg-white text-gray-800 text-sm focus:outline-none focus:border-[#E8998B]"
+              className="w-full px-4 py-3 rounded-xl border border-[#F0E0CF] bg-white text-gray-800 text-sm focus:outline-none focus:border-[#E8927C]"
             />
           </div>
 
@@ -89,7 +89,7 @@ export default function RegisterPage() {
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               placeholder="再次输入密码"
-              className="w-full px-4 py-3 rounded-xl border border-[#F0E4DB] bg-white text-gray-800 text-sm focus:outline-none focus:border-[#E8998B]"
+              className="w-full px-4 py-3 rounded-xl border border-[#F0E0CF] bg-white text-gray-800 text-sm focus:outline-none focus:border-[#E8927C]"
             />
           </div>
 
@@ -100,7 +100,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 rounded-xl bg-[#E8998B] text-white font-medium text-sm hover:bg-[#D48275] transition-colors disabled:opacity-50"
+            className="w-full py-3.5 rounded-xl bg-[#E8927C] text-white font-medium text-sm hover:bg-[#D47E6A] transition-colors disabled:opacity-50"
           >
             {loading ? "注册中..." : "创建账号"}
           </button>
@@ -108,7 +108,7 @@ export default function RegisterPage() {
 
         <p className="text-center text-sm text-gray-400 mt-8">
           已有账号？{" "}
-          <Link href="/login" className="text-[#E8998B] underline underline-offset-2">
+          <Link href="/login" className="text-[#E8927C] underline underline-offset-2">
             登录
           </Link>
         </p>

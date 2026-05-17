@@ -14,7 +14,7 @@ export default function ChatBubble({ role, content, time, avatarUrl, imageUrl }:
   return (
     <div className={`flex gap-3 px-4 py-2 ${isMother ? "justify-start" : "justify-end"}`}>
       {isMother && (
-        <div className="w-10 h-10 rounded-full bg-[#E8998B] flex items-center justify-center text-white text-sm font-medium shrink-0 overflow-hidden">
+        <div className="w-10 h-10 rounded-full bg-[#E8927C] flex items-center justify-center text-white text-sm font-medium shrink-0 overflow-hidden">
           {avatarUrl ? (
             <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
           ) : (

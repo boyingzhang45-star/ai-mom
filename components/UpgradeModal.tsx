@@ -12,7 +12,7 @@ export default function UpgradeModal({ isOpen, onClose, remaining }: UpgradeModa
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-md bg-[#FFF8F5] rounded-t-2xl sm:rounded-2xl p-8 animate-slide-up shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div className="relative w-full max-w-md bg-[#FFF7F0] rounded-t-2xl sm:rounded-2xl p-8 animate-slide-up shadow-2xl max-h-[90vh] overflow-y-auto">
         <div className="text-center mb-6">
           <div className="text-4xl mb-4">🌸</div>
           <h2 className="text-xl font-semibold text-gray-800 mb-2">
@@ -23,7 +23,7 @@ export default function UpgradeModal({ isOpen, onClose, remaining }: UpgradeModa
           </p>
         </div>
 
-        <div className="bg-white rounded-xl p-5 mb-6 border border-[#F0E4DB]">
+        <div className="bg-white rounded-xl p-5 mb-6 border border-[#F0E0CF]">
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm text-gray-600">免费额度</span>
             <span className="text-sm font-medium text-red-500">
@@ -38,7 +38,7 @@ export default function UpgradeModal({ isOpen, onClose, remaining }: UpgradeModa
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 mb-6 border border-[#F0E4DB]">
+        <div className="bg-white rounded-xl p-5 mb-6 border border-[#F0E0CF]">
           <p className="text-center text-sm font-semibold text-gray-800 mb-4">
             ¥19 / 月 · Pro 会员
           </p>
