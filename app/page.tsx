@@ -84,17 +84,28 @@ export default function HomePage() {
 
   useEffect(() => {
     if (!userId) return
-    fetch(`/api/mother?userId=${userId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.user?.motherProfile) {
-          setMother(data.user.motherProfile)
-          loadMessages()
-        } else {
-          router.push("/onboarding")
-        }
-      })
-      .catch(() => setLoading(false))
+
+    const justCreated = sessionStorage.getItem("mom_just_created")
+    const doCheck = (retries: number) => {
+      fetch(`/api/mother?userId=${userId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.user?.motherProfile) {
+            if (justCreated) sessionStorage.removeItem("mom_just_created")
+            setMother(data.user.motherProfile)
+            loadMessages()
+          } else if (retries > 0) {
+            setTimeout(() => doCheck(retries - 1), 800)
+          } else {
+            router.push("/onboarding")
+          }
+        })
+        .catch(() => {
+          if (retries > 0) setTimeout(() => doCheck(retries - 1), 800)
+          else setLoading(false)
+        })
+    }
+    doCheck(justCreated ? 5 : 0)
   }, [userId])
 
   const handleSend = async (data: { text?: string; imageUrl?: string }) => {
