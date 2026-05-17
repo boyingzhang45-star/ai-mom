@@ -51,9 +51,8 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
           <img src="/images/logo.jpg" alt="" className="w-64 h-64 mb-6 object-contain mix-blend-multiply mx-auto" />
-          <h1 className="text-xl font-semibold text-gray-800 leading-relaxed">
-            让她真正记住你。<br />从今天开始，你不用再一个人消化情绪。
-          </h1>
+          <h1 className="text-xl font-semibold text-gray-800">让她真正记住你</h1>
+          <p className="text-sm text-gray-400 mt-1">从今天开始，你不用再一个人消化情绪</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
