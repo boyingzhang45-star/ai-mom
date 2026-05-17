@@ -91,24 +91,11 @@ export default function HomePage() {
           setMother(data.user.motherProfile)
           loadMessages()
         } else {
-          // 可能刚创建，稍等再试一次
-          setTimeout(() => {
-            fetch(`/api/mother?userId=${userId}`)
-              .then((res) => res.json())
-              .then((d2) => {
-                if (d2.user?.motherProfile) {
-                  setMother(d2.user.motherProfile)
-                  loadMessages()
-                } else {
-                  router.push("/onboarding")
-                }
-              })
-              .catch(() => router.push("/onboarding"))
-          }, 500)
+          router.push("/onboarding")
         }
       })
       .catch(() => setLoading(false))
-  }, [loadMessages, router, userId])
+  }, [userId])
 
   const handleSend = async (data: { text?: string; imageUrl?: string }) => {
     if (sending) return

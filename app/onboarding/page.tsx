@@ -39,7 +39,7 @@ export default function OnboardingPage() {
         throw new Error(json.error || "创建失败")
       }
 
-      router.push("/")
+      window.location.href = "/"
     } catch (e) {
       setError(e instanceof Error ? e.message : "创建失败，请重试")
     } finally {
