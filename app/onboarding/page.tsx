@@ -3,14 +3,14 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import MotherCreator from "@/components/MotherCreator"
-import { useUser } from "@/lib/user-id"
+import { getUserId } from "@/lib/user-id"
 
 export default function OnboardingPage() {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
   const [limitReached, setLimitReached] = useState(false)
-  const { userId } = useUser()
+  const userId = getUserId()
 
   const handleSave = async (data: {
     nickname: string

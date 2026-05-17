@@ -6,7 +6,7 @@ import Link from "next/link"
 import ChatList from "@/components/ChatList"
 import ChatInput from "@/components/ChatInput"
 import UpgradeModal from "@/components/UpgradeModal"
-import { useUser } from "@/lib/user-id"
+import { getUserId } from "@/lib/user-id"
 
 interface MotherProfile {
   name: string
@@ -28,44 +28,15 @@ export default function HomePage() {
   const [mother, setMother] = useState<MotherProfile | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [streamingContent, setStreamingContent] = useState("")
-  const [, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [conversationId, setConversationId] = useState<string | null>(null)
   const [isPro, setIsPro] = useState(false)
   const [remaining, setRemaining] = useState(20)
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [limitReached, setLimitReached] = useState(false)
-  const { userId, isLoggedIn } = useUser()
-  const [authChecked, setAuthChecked] = useState(false)
+  const [loading, setLoading] = useState(true)
 
-  // 加载用户会员状态
-  useEffect(() => {
-    if (!userId) return
-    setAuthChecked(true)
-    fetch(`/api/user-status?userId=${userId}`)
-      .then((r) => r.json())
-      .then((d) => {
-        setIsPro(d.isPro)
-        setRemaining(d.remaining)
-      })
-      .catch(() => {})
-  }, [userId])
-
-  // Stripe 支付回调
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    if (params.get("upgrade") === "success") {
-      setShowUpgrade(false)
-      window.history.replaceState({}, "", "/")
-      // 重新获取状态
-      fetch(`/api/user-status?userId=${userId}`)
-        .then((r) => r.json())
-        .then((d) => {
-          setIsPro(d.isPro)
-          setRemaining(d.remaining)
-        })
-    }
-  }, [userId])
+  const userId = getUserId()
 
   const loadMessages = useCallback(async () => {
     try {
@@ -87,24 +58,28 @@ export default function HomePage() {
 
     // 优先从缓存读刚创建的母亲
     const cached = sessionStorage.getItem("mom_new") || localStorage.getItem("mom_new")
-    const isNew = new URLSearchParams(window.location.search).has("new")
-    if (cached || isNew) {
+    if (cached) {
       try {
-        if (cached) {
-          const mom = JSON.parse(cached)
-          sessionStorage.removeItem("mom_new")
-          localStorage.removeItem("mom_new")
-          setMother(mom)
-          setLoading(false)
-          setAuthChecked(true)
-          loadMessages()
-          if (isNew) window.history.replaceState({}, "", "/")
-          return
-        }
+        const mom = JSON.parse(cached)
+        sessionStorage.removeItem("mom_new")
+        localStorage.removeItem("mom_new")
+        setMother(mom)
+        setLoading(false)
+        loadMessages()
+        return
       } catch {}
     }
 
-    // 正常流程：查 API
+    // 加载用户状态
+    fetch(`/api/user-status?userId=${userId}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setIsPro(d.isPro)
+        setRemaining(d.remaining)
+      })
+      .catch(() => {})
+
+    // 查 API
     fetch(`/api/mother?userId=${userId}`)
       .then((res) => res.json())
       .then((data) => {
@@ -141,32 +116,18 @@ export default function HomePage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId,
-          message: content || "[图片]",
-          imageUrl,
-          conversationId,
-        }),
+        body: JSON.stringify({ userId, message: content || "[图片]", imageUrl, conversationId }),
       })
 
       if (!res.ok) {
         const err = await res.json()
-        if (err.needUpgrade) {
-          setShowUpgrade(true)
-          setSending(false)
-          return
-        }
-        if (err.error === "LIMIT_REACHED") {
-          setLimitReached(true)
-          return
-        }
+        if (err.needUpgrade) { setShowUpgrade(true); setSending(false); return }
+        if (err.error === "LIMIT_REACHED") { setLimitReached(true); return }
         throw new Error(err.error || "发送失败")
       }
 
       const convId = res.headers.get("X-Conversation-Id")
-      if (convId && !conversationId) {
-        setConversationId(convId)
-      }
+      if (convId && !conversationId) setConversationId(convId)
 
       const reader = res.body?.getReader()
       if (!reader) throw new Error("无响应流")
@@ -182,9 +143,7 @@ export default function HomePage() {
         if (firstLine) {
           const lines = chunk.split("\n")
           serverConvId = lines[0]
-          if (serverConvId && !conversationId) {
-            setConversationId(serverConvId)
-          }
+          if (serverConvId && !conversationId) setConversationId(serverConvId)
           fullResponse = chunk.substring(serverConvId.length + 1)
           firstLine = false
         } else {
@@ -193,14 +152,7 @@ export default function HomePage() {
         setStreamingContent(fullResponse)
       }
 
-      const motherMsg: Message = {
-        id: `msg-${Date.now()}`,
-        role: "mother",
-        content: fullResponse,
-        createdAt: new Date().toISOString(),
-      }
-
-      setMessages((prev) => [...prev, motherMsg])
+      setMessages((prev) => [...prev, { id: `msg-${Date.now()}`, role: "mother", content: fullResponse, createdAt: new Date().toISOString() }])
       setStreamingContent("")
     } catch (e) {
       console.error("发送失败:", e)
@@ -209,7 +161,7 @@ export default function HomePage() {
     }
   }
 
-  if (!authChecked) {
+  if (loading && !mother) {
     return (
       <div className="h-screen bg-[#FFF7F0] flex items-center justify-center">
         <div className="text-gray-400 text-sm">加载中...</div>
@@ -229,10 +181,7 @@ export default function HomePage() {
     <div className="h-screen bg-[#FFF7F0] flex flex-col max-w-lg mx-auto">
       <header className="flex items-center gap-3 px-4 py-3 bg-white/90 backdrop-blur-sm border-b border-[#F0E0CF]">
         <Link href="/settings" className="shrink-0">
-          <div
-            className="w-11 h-11 rounded-full flex items-center justify-center text-2xl hover:opacity-80 transition-opacity cursor-pointer"
-            style={{ backgroundColor: "#FFF0EB" }}
-          >
+          <div className="w-11 h-11 rounded-full flex items-center justify-center text-2xl hover:opacity-80 transition-opacity cursor-pointer" style={{ backgroundColor: "#FFF0EB" }}>
             {mother.avatarUrl || "🌸"}
           </div>
         </Link>
@@ -242,47 +191,27 @@ export default function HomePage() {
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0" />
           </div>
           {isPro ? (
-              <p className="text-xs text-[#E8927C] font-medium">Pro 会员</p>
-            ) : (
-              <p className="text-xs text-gray-400">
-                剩余 {remaining} 条 ·{" "}
-                <button
-                  onClick={() => setShowUpgrade(true)}
-                  className="text-[#E8927C] underline underline-offset-2"
-                >
-                  升级
-                </button>
-              </p>
-            )}
-          </div>
-        </header>
+            <p className="text-xs text-[#E8927C] font-medium">Pro 会员</p>
+          ) : (
+            <p className="text-xs text-gray-400">
+              剩余 {remaining} 条 ·{" "}
+              <button onClick={() => setShowUpgrade(true)} className="text-[#E8927C] underline underline-offset-2">升级</button>
+            </p>
+          )}
+        </div>
+      </header>
 
-      <ChatList
-        messages={messages}
-        streamingContent={streamingContent}
-        motherAvatar={mother.avatarUrl}
-        isTyping={sending && !streamingContent}
-      />
+      <ChatList messages={messages} streamingContent={streamingContent} motherAvatar={mother.avatarUrl} isTyping={sending && !streamingContent} />
 
-      {limitReached && (
+      {limitReached ? (
         <div className="px-4 py-3 text-center text-sm text-[#E8927C] bg-white/90 border-t border-[#F0E0CF]">
           这次体验已经结束了，谢谢你陪她聊了这么久。
         </div>
-      )}
-      {!limitReached && (
-        <ChatInput
-          onSend={handleSend}
-          disabled={sending}
-          isPro={isPro}
-          onImageBlocked={() => setShowUpgrade(true)}
-        />
+      ) : (
+        <ChatInput onSend={handleSend} disabled={sending} isPro={isPro} onImageBlocked={() => setShowUpgrade(true)} />
       )}
 
-      <UpgradeModal
-        isOpen={showUpgrade}
-        onClose={() => setShowUpgrade(false)}
-        remaining={remaining}
-      />
+      <UpgradeModal isOpen={showUpgrade} onClose={() => setShowUpgrade(false)} remaining={remaining} />
     </div>
   )
 }
