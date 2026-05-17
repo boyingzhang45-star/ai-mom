@@ -3,13 +3,14 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import MotherCreator from "@/components/MotherCreator"
-import { getUserId } from "@/lib/user-id"
+import { useUser } from "@/lib/user-id"
 
 export default function OnboardingPage() {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
   const [limitReached, setLimitReached] = useState(false)
+  const { userId } = useUser()
 
   const handleSave = async (data: {
     nickname: string
@@ -23,7 +24,6 @@ export default function OnboardingPage() {
     setError("")
 
     try {
-      const userId = getUserId()
       const res = await fetch("/api/mother", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

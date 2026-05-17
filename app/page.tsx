@@ -6,7 +6,7 @@ import Link from "next/link"
 import ChatList from "@/components/ChatList"
 import ChatInput from "@/components/ChatInput"
 import UpgradeModal from "@/components/UpgradeModal"
-import { getUserId } from "@/lib/user-id"
+import { useUser } from "@/lib/user-id"
 
 interface MotherProfile {
   name: string
@@ -35,10 +35,13 @@ export default function HomePage() {
   const [remaining, setRemaining] = useState(20)
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [limitReached, setLimitReached] = useState(false)
-  const userId = getUserId()
+  const { userId, isLoggedIn } = useUser()
+  const [authChecked, setAuthChecked] = useState(false)
 
   // 加载用户会员状态
   useEffect(() => {
+    if (!userId) return
+    setAuthChecked(true)
     fetch(`/api/user-status?userId=${userId}`)
       .then((r) => r.json())
       .then((d) => {
@@ -182,6 +185,14 @@ export default function HomePage() {
     } finally {
       setSending(false)
     }
+  }
+
+  if (!authChecked) {
+    return (
+      <div className="h-screen bg-[#FFF8F5] flex items-center justify-center">
+        <div className="text-gray-400 text-sm">加载中...</div>
+      </div>
+    )
   }
 
   if (!mother) {

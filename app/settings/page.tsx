@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { getUserId } from "@/lib/user-id"
+import { useUser } from "@/lib/user-id"
 
 const PERSONALITIES = [
   { value: "gentle", label: "温柔慈爱", desc: "说话轻柔温暖，像一杯热牛奶" },
@@ -38,7 +38,7 @@ export default function SettingsPage() {
   const [avatarUrl, setAvatarUrl] = useState("🌸")
   const [familyDescription, setFamilyDescription] = useState("")
 
-  const userId = getUserId()
+  const { userId } = useUser()
 
   useEffect(() => {
     fetch(`/api/mother?userId=${userId}`)

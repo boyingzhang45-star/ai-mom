@@ -13,6 +13,16 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // 认证
+  email           String?   @unique
+  phone           String?   @unique
+  passwordHash    String?
+  wechatOpenId    String?   @unique
+  wechatUnionId   String?
+  googleId        String?   @unique
+  appleId         String?   @unique
+  avatarUrl       String?
+
   motherProfile    MotherProfile?
   conversations    Conversation[]
   longTermMemories LongTermMemory[]
