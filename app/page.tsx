@@ -25,7 +25,7 @@ interface Message {
 
 export default function HomePage() {
   const router = useRouter()
-  const [mother, setMother] = useState<MotherProfile | null>(null)
+  // mother state moved to above with lazy initializer
   const [messages, setMessages] = useState<Message[]>([])
   const [streamingContent, setStreamingContent] = useState("")
   const [sending, setSending] = useState(false)
@@ -37,6 +37,21 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true)
 
   const userId = getUserId()
+
+  // 直接在 render 阶段读缓存，不依赖 useEffect 时序
+  const [mother, setMother] = useState<MotherProfile | null>(() => {
+    if (typeof window === "undefined") return null
+    const cached = sessionStorage.getItem("mom_new") || localStorage.getItem("mom_new")
+    if (cached) {
+      try {
+        const mom = JSON.parse(cached)
+        sessionStorage.removeItem("mom_new")
+        localStorage.removeItem("mom_new")
+        return mom
+      } catch { return null }
+    }
+    return null
+  })
 
   const loadMessages = useCallback(async () => {
     try {
@@ -53,30 +68,26 @@ export default function HomePage() {
     }
   }, [userId])
 
+  // 如果已有 mother（从缓存初始化），加载消息
   useEffect(() => {
-    if (!userId) return
-
-    // 优先从缓存读刚创建的母亲
-    const cached = sessionStorage.getItem("mom_new") || localStorage.getItem("mom_new")
-    if (cached) {
-      try {
-        const mom = JSON.parse(cached)
-        sessionStorage.removeItem("mom_new")
-        localStorage.removeItem("mom_new")
-        setMother(mom)
-        setLoading(false)
-        loadMessages()
-        return
-      } catch {}
+    if (mother) {
+      setLoading(false)
+      loadMessages()
+      fetch(`/api/user-status?userId=${userId}`)
+        .then((r) => r.json())
+        .then((d) => { setIsPro(d.isPro); setRemaining(d.remaining) })
+        .catch(() => {})
+      return
     }
+  }, [mother?.name])
+
+  useEffect(() => {
+    if (!userId || mother) return
 
     // 加载用户状态
     fetch(`/api/user-status?userId=${userId}`)
       .then((r) => r.json())
-      .then((d) => {
-        setIsPro(d.isPro)
-        setRemaining(d.remaining)
-      })
+      .then((d) => { setIsPro(d.isPro); setRemaining(d.remaining) })
       .catch(() => {})
 
     // 查 API
@@ -91,7 +102,7 @@ export default function HomePage() {
         }
       })
       .catch(() => setLoading(false))
-  }, [userId])
+  }, [userId, mother])
 
   const handleSend = async (data: { text?: string; imageUrl?: string }) => {
     if (sending) return
