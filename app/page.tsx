@@ -83,6 +83,7 @@ export default function HomePage() {
   }, [userId])
 
   useEffect(() => {
+    if (!userId) return
     fetch(`/api/mother?userId=${userId}`)
       .then((res) => res.json())
       .then((data) => {
@@ -90,7 +91,20 @@ export default function HomePage() {
           setMother(data.user.motherProfile)
           loadMessages()
         } else {
-          router.push("/onboarding")
+          // 可能刚创建，稍等再试一次
+          setTimeout(() => {
+            fetch(`/api/mother?userId=${userId}`)
+              .then((res) => res.json())
+              .then((d2) => {
+                if (d2.user?.motherProfile) {
+                  setMother(d2.user.motherProfile)
+                  loadMessages()
+                } else {
+                  router.push("/onboarding")
+                }
+              })
+              .catch(() => router.push("/onboarding"))
+          }, 500)
         }
       })
       .catch(() => setLoading(false))
